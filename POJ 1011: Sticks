@@ -1,0 +1,56 @@
+#include<iostream>
+#include<cstdio>
+#include<algorithm>
+using namespace std;
+int n,a[100],nowk,lim;
+bool f[100],ok=false;
+bool cmp(const int &qw,const int &qe){return qw>qe;}
+bool dfs(int cnt,int sum,int x){
+	if(ok)return false;
+	if(sum==nowk){
+		sum=0;
+		x=0;
+		cnt++;
+	}
+	if(cnt>=lim-1){
+		ok=true;
+		return false;
+	}
+	int la=-1;
+	for(int j=x;j<=n;j++){
+		if(f[j]||la==a[j])continue;
+		f[j]=true;
+		if(sum+a[j]<=nowk){
+			if(dfs(cnt,sum+a[j],x+1))return true;
+			else la=a[j];
+		}
+		f[j]=false;
+		if(sum==0)break;
+	}
+	return 0;
+}
+int main(){
+	for(;;){
+		scanf("%d",&n);
+		if(n==0)return 0;
+		int tsum=0,Max_a=0;
+		for(int i=1;i<=n;i++){
+			scanf("%d",&a[i]);
+			tsum+=a[i];
+			Max_a=Max_a<a[i]?a[i]:Max_a;
+		}
+		for(int k=Max_a;k<=tsum;k++){
+			if(tsum%k!=0)continue;
+			sort(a+1,a+n+1,cmp);
+			nowk=k;
+			lim=tsum/k;
+			ok=false;
+			dfs(0,0,1);
+			if(ok){
+				printf("%d\n",k);
+				break;
+			}
+		}
+	}
+	return 0;
+}
